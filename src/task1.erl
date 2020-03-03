@@ -10,10 +10,25 @@
 -author("Peter").
 
 -export([eval/1]).
-eval(X) ->
-  case X of
-    {add,A,B}->
-      A+B;
-    {mul,A,B}->
-      A * B
-  end.
+%%eval({Op,E1,E2}) ->
+%%  case Op of
+%%    add->
+%%      E1+E2;
+%%    mul->
+%%      E1 * E2
+%%  end.
+
+eval(N) when is_number(N) -> N;
+eval({Operation, E1, E2}) ->
+  case Operation of
+    'add' ->
+      eval(E1) + eval(E2);
+    'sub' ->
+      eval(E1) - eval(E2);
+    'mul' ->
+      eval(E1) * eval(E2);
+    'div' ->
+      eval(E1) / eval(E2)
+  end;
+
+eval(N) when not is_number(N) -> error.
