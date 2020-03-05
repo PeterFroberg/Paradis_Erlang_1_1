@@ -10,25 +10,26 @@
 -author("Peter").
 
 -export([eval/1]).
-%%eval({Op,E1,E2}) ->
-%%  case Op of
-%%    add->
-%%      E1+E2;
-%%    mul->
-%%      E1 * E2
-%%  end.
 
-eval(N) when is_number(N) -> N;
 eval({Operation, E1, E2}) ->
+  try
+    {ok, recursive_eval1({Operation, E1, E2})}
+  catch
+    _:_ -> error
+  end.
+
+
+recursive_eval1(N) when is_number(N) -> N;
+recursive_eval1(N) when not is_number(N) and not is_tuple(N) -> error(badarith);
+recursive_eval1({Operation, E1, E2}) ->
+
   case Operation of
     'add' ->
-      eval(E1) + eval(E2);
+      recursive_eval1(E1) + recursive_eval1(E2);
     'sub' ->
-      eval(E1) - eval(E2);
+      recursive_eval1(E1) - recursive_eval1(E2);
     'mul' ->
-      eval(E1) * eval(E2);
+      recursive_eval1(E1) * recursive_eval1(E2);
     'div' ->
-      eval(E1) / eval(E2)
-  end;
-
-eval(N) when not is_number(N) -> error.
+      recursive_eval1(E1) / recursive_eval1(E2)
+  end.
