@@ -48,21 +48,27 @@ split(F, Sresult, [H|T]) ->
 
 
 groupby(F,L) ->
-  groupby(F, #{negative => [], positive => [], zero => []}, 1, L).
+  groupby(F, #{}, 1, L).
+  %%groupby(F, #{negative => [], positive => [], zero => []}, 1, L).
 
 groupby(_F, Gresult, _Index, []) -> Gresult;
 groupby(F, Gresult, Index, [H|T]) ->
-  case F(H) of
-    negative ->
-      groupby(F, maps:update(negative, maps:get(negative, Gresult)++ [Index], Gresult), Index + 1, T);
-    positive ->
-      groupby(F, maps:update(positive, maps:get(positive, Gresult)++ [Index], Gresult), Index + 1, T);
-    zero ->
-      groupby(F, maps:update(zero, maps:get(zero, Gresult)++ [Index], Gresult), Index + 1, T)
-  end.
+  groupby(F, maps:put(F(H), maps:get(F(H), Gresult,[])++ [Index], Gresult), Index + 1, T).
+
+
+
+%%  case F(H) of
+%%    negative ->
+%%      groupby(F, maps:put(negative, maps:get(negative, Gresult,[])++ [Index], Gresult), Index + 1, T);
+%%    positive ->
+%%      groupby(F, maps:put(positive, maps:get(positive, Gresult,[])++ [Index], Gresult), Index + 1, T);
+%%    zero ->
+%%      groupby(F, maps:put(zero, maps:get(zero, Gresult,[])++ [Index], Gresult), Index + 1, T)
+%%  end.
 
 
 %% Modiferad så att ISaks fråga fungerar :)
+%%
 %%task3:groupby(fun (X) -> if X < 0 -> negative;
 %%                     X > 0 -> positive;
 %%                     true -> zero
