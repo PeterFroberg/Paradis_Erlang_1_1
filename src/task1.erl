@@ -13,30 +13,30 @@
 
 eval({Operation, E1, E2}) ->
   try
-    {ok, recursive_eval1({Operation, E1, E2})}
+    {ok, recursive_eval({Operation, E1, E2})}
   catch
     _:_ -> error
   end.
 
 
-recursive_eval1(N) when is_number(N) -> N;
-recursive_eval1(N) when not is_number(N) and not is_tuple(N) -> error(badarith);
-recursive_eval1({Operation, E1, E2}) ->
+recursive_eval(N) when is_number(N) -> N;
+recursive_eval(N) when not is_number(N) and not is_tuple(N) -> error(badarith);
+recursive_eval({Operation, E1, E2}) ->
 
   case Operation of
     'add' ->
-      recursive_eval1(E1) + recursive_eval1(E2);
+      recursive_eval(E1) + recursive_eval(E2);
     'sub' ->
-      recursive_eval1(E1) - recursive_eval1(E2);
+      recursive_eval(E1) - recursive_eval(E2);
     'mul' ->
-      recursive_eval1(E1) * recursive_eval1(E2);
+      recursive_eval(E1) * recursive_eval(E2);
     'div' ->
-      recursive_eval1(E1) / recursive_eval1(E2)
+      recursive_eval(E1) / recursive_eval(E2)
   end.
 
 eval({Operation, E1, E2}, M) when is_map(M) ->
   try
-    {ok, recursive_eval1({Operation, E1, E2}, M)}
+    {ok, recursive_eval({Operation, E1, E2}, M)}
   catch
     error:badarith -> {error, variable_not_found};
     _:_ -> {error, unknown_error}
@@ -45,20 +45,20 @@ eval({Operation, E1, E2}, M) when is_map(M) ->
 
 
 
-recursive_eval1(N,_M) when is_number(N) -> N;
-recursive_eval1(N,M) when is_atom(N) and is_map_key(N, M) -> maps:get(N,M);
-recursive_eval1(N,_M) when not is_tuple(N) -> error(badarith);
-recursive_eval1({Operation, E1, E2}, M) ->
+recursive_eval(N,_M) when is_number(N) -> N;
+recursive_eval(N,M) when is_atom(N) and is_map_key(N, M) -> maps:get(N,M);
+recursive_eval(N,_M) when not is_tuple(N) -> error(badarith);
+recursive_eval({Operation, E1, E2}, M) ->
 
   case Operation of
     'add' ->
-      recursive_eval1(E1,M) + recursive_eval1(E2,M);
+      recursive_eval(E1,M) + recursive_eval(E2,M);
     'sub' ->
-      recursive_eval1(E1,M) - recursive_eval1(E2,M);
+      recursive_eval(E1,M) - recursive_eval(E2,M);
     'mul' ->
-      recursive_eval1(E1,M) * recursive_eval1(E2,M);
+      recursive_eval(E1,M) * recursive_eval(E2,M);
     'div' ->
-      recursive_eval1(E1,M) / recursive_eval1(E2,M)
+      recursive_eval(E1,M) / recursive_eval(E2,M)
   end.
 
 
